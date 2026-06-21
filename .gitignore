@@ -3,3 +3,5 @@ data/db.json
 data/db.json.*
 .env
 firebase-debug.log
+tools/render/
+tools/render-cli.zip
