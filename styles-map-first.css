@@ -1,0 +1,229 @@
+/* Map-First Layout — زیادہ نقشہ، کم UI */
+:root {
+  --vehicle-zone-h: 76px;
+  --sub-bar-h: 46px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --main-bar-h: 44px;
+    --vehicle-zone-h: 72px;
+    --sub-bar-h: 42px;
+  }
+
+  .brand__name { display: none; }
+  .desktop-nav { display: none !important; }
+
+  .app-header {
+    height: var(--main-bar-h);
+    padding: 0 10px;
+  }
+
+  .header-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .central-workspace {
+    position: relative;
+    display: block !important;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .map-layer {
+    position: absolute !important;
+    inset: 0;
+    flex: none !important;
+    min-height: 0 !important;
+  }
+
+  .vehicle-zone--overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 650;
+    max-height: var(--vehicle-zone-h) !important;
+    padding: 4px 8px 6px;
+    background: linear-gradient(to top, var(--color-bg-elevated, #fff) 75%, transparent);
+    border-top: none;
+    pointer-events: none;
+  }
+
+  .vehicle-zone--overlay .vehicle-list {
+    pointer-events: auto;
+  }
+
+  .vehicle-zone__label { display: none; }
+
+  .sub-bar {
+    min-height: var(--sub-bar-h);
+    padding: 4px 8px;
+  }
+
+  .action-btn {
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    min-height: 36px;
+  }
+
+  .right-map-controls {
+    position: absolute;
+    bottom: calc(var(--vehicle-zone-h) + 8px);
+    top: auto;
+    inset-inline-end: 10px;
+    margin-bottom: 0;
+  }
+}
+
+.search-fab {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: auto;
+  z-index: 800;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #2563eb, #16a34a);
+  color: white;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.2s;
+  animation: fabPulse 2.5s ease infinite;
+}
+
+.search-fab:active { transform: scale(0.92); }
+
+@keyframes fabPulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4); }
+  50% { box-shadow: 0 4px 24px rgba(37, 99, 235, 0.65); }
+}
+
+.route-chip {
+  position: absolute;
+  top: 12px;
+  left: 64px;
+  right: 58px;
+  z-index: 799;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.search-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+  pointer-events: none;
+}
+
+.search-sheet:not(.hidden) { pointer-events: auto; }
+
+.search-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.search-sheet__panel {
+  position: relative;
+  width: calc(100% - 24px);
+  max-width: 400px;
+  padding: 16px;
+  margin-top: 8px;
+  animation: sheetDrop 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
+  pointer-events: auto;
+}
+
+.search-sheet__handle {
+  width: 36px;
+  height: 4px;
+  background: #cbd5e1;
+  border-radius: 2px;
+  margin: 0 auto 12px;
+}
+
+.search-sheet__title {
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  color: #64748b;
+  text-align: center;
+}
+
+@keyframes sheetDrop {
+  from { opacity: 0; transform: translateY(-20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 768px) {
+  .vehicle-card--compact {
+    flex: 0 0 155px !important;
+    padding: 6px 10px !important;
+    gap: 8px !important;
+    align-items: center;
+  }
+
+  .vehicle-card--compact .vehicle-card__avatar {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.65rem !important;
+    border-radius: 8px !important;
+  }
+
+  .vehicle-card--compact .vehicle-card__body h4 { font-size: 0.75rem !important; }
+  .vehicle-card--compact .vehicle-card__rating,
+  .vehicle-card--compact .vehicle-card__vehicle { display: none; }
+  .vehicle-card--compact .vehicle-card__meta { font-size: 0.65rem !important; gap: 4px !important; }
+  .vehicle-card--compact .vehicle-card__actions { flex-direction: row !important; gap: 4px !important; }
+  .vehicle-card--compact .vehicle-card__actions button {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .vehicle-list { gap: 8px !important; padding: 0 4px !important; }
+}
+
+.driver-pin--moving {
+  animation: vehicleDrive 1.2s ease-in-out infinite;
+}
+
+@keyframes vehicleDrive {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2px, -2px); }
+}
+
+.user-pin--sharing {
+  animation: livePulse 1.5s ease infinite;
+  border-color: #16a34a !important;
+}
+
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
+  50% { box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
+}
+
+.btn-tool--active {
+  background: #2563eb !important;
+  color: white !important;
+}

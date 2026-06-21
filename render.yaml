@@ -1,0 +1,27 @@
+# Render.com — P2P Transport Node.js API + WebSockets
+# Deploy: connect repo at https://dashboard.render.com → Blueprint or New Web Service
+# After deploy, set index.html meta p2p-api-origin to your service URL.
+
+services:
+  - type: web
+    name: p2p-transport-api
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_ONLY
+        value: "true"
+      - key: CORS_ORIGIN
+        value: https://ravo-44c4c.web.app,https://ravo-44c4c.firebaseapp.com,http://localhost:3000,http://127.0.0.1:3000
+    # Persistent disk (optional — requires paid plan; omit on free tier)
+    # disk:
+    #   name: p2p-data
+    #   mountPath: /var/data
+    # envVars:
+    #   - key: DATA_DIR
+    #     value: /var/data

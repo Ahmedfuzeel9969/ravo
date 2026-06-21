@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="description" content="P2P Transport — سفر، سامان، ہر ڈivice پر">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="P2P Transport">
+  <meta name="format-detection" content="telephone=no">
+  <!-- Render.com API — deploy backend then set your service URL here -->
+  <meta name="p2p-api-origin" content="https://p2p-transport-api.onrender.com">
+  <title>P2P Transport & Cargo</title>
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-map-rail.css?v=13">
+</head>
+<body>
+
+  <!-- Splash Screen -->
+  <div id="SplashScreen" class="splash">
+    <div class="splash__logo">🚕</div>
+    <h1 class="splash__title">P2P Transport</h1>
+    <p class="splash__sub">سفر · سامان · ہر جگہ</p>
+    <div class="splash__loader"></div>
+  </div>
+
+  <!-- Offline Banner -->
+  <div id="OfflineBanner" class="offline-banner hidden" role="alert">
+    📡 آپ آف لائن ہیں — محدود موڈ
+  </div>
+
+  <!-- Install Banner -->
+  <div id="InstallBanner" class="install-banner hidden">
+    <span>📲 ایپ انسٹال کریں — iPhone, Android, Windows</span>
+    <button type="button" id="InstallBannerBtn" class="install-banner__btn">انسٹال</button>
+    <button type="button" id="InstallDismiss" class="install-banner__dismiss" aria-label="بند">✕</button>
+  </div>
+
+  <div id="AppContainer" class="app-layout">
+
+    <!-- Header -->
+    <header id="TopNavigationContainer" class="main-bar">
+      <div class="app-header">
+        <div class="brand">
+          <span class="brand__icon">🚕</span>
+          <span class="brand__name">P2P Transport</span>
+        </div>
+        <div class="header-actions header-actions--rail-only">
+          <!-- آئیکنز AppSideRail میں گروپ باکسز میں -->
+        </div>
+      </div>
+
+      <!-- Desktop / Tablet Nav -->
+      <nav class="nav-scroll-wrapper desktop-nav" aria-label="مرکزی ماڈیولز">
+        <ul class="main-modules-list">
+          <li class="nav-item active" data-module="home"><span class="nav-icon">🏠</span><span class="nav-label">ہوم</span></li>
+          <li class="nav-item" data-module="ride"><span class="nav-icon">🚕</span><span class="nav-label">سفر</span></li>
+          <li class="nav-item" data-module="cargo"><span class="nav-icon">🚚</span><span class="nav-label">سامان</span></li>
+          <li class="nav-item" data-module="bookings"><span class="nav-icon">📅</span><span class="nav-label">بکنگ</span></li>
+          <li class="nav-item" data-module="map"><span class="nav-icon">🗺️</span><span class="nav-label">نقشہ</span></li>
+          <li class="nav-item" data-module="history"><span class="nav-icon">📊</span><span class="nav-label">ریکارڈ</span></li>
+          <li class="nav-item" data-module="finance"><span class="nav-icon">💰</span><span class="nav-label">مالیات</span></li>
+          <li class="nav-item" data-module="favorites"><span class="nav-icon">⭐</span><span class="nav-label">پسندیدہ</span></li>
+          <li class="nav-item" data-module="fleet"><span class="nav-icon">🏢</span><span class="nav-label">فلیٹ</span></li>
+          <li class="nav-item" data-module="notifications"><span class="nav-icon">🔔</span><span class="nav-label">اطلاعات</span></li>
+          <li class="nav-item" data-module="safety"><span class="nav-icon">🛡️</span><span class="nav-label">حفاظت</span></li>
+          <li class="nav-item" data-module="profile"><span class="nav-icon">👤</span><span class="nav-label">پروفائل</span></li>
+          <li class="nav-item more-menu-trigger">
+            <span class="nav-icon">☰</span><span class="nav-label">More</span>
+            <ul class="dropdown-menu hidden" id="MoreDropdown">
+              <li data-action="settings">⚙️ سیٹنگز</li>
+              <li data-action="language">🌐 زبان</li>
+              <li data-action="help"><a href="page2.html">❓ مدد</a></li>
+              <li data-action="legal">⚖️ قانونی</li>
+              <li data-action="support">🎧 سپورٹ</li>
+              <li data-action="logout">🚪 لاگ آؤٹ</li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- دائیں طرف — ایک عمودی لائن، گروپ باکسز -->
+    <aside id="AppSideRail" class="app-side-rail" aria-label="تیز کنٹرولز">
+
+      <div class="rail-group" data-rail-group="layout">
+        <button type="button" class="rail-group-btn" id="GroupBtnLayout" title="پینل لAYOUT" aria-haspopup="true">
+          <span class="rail-group-btn__icon">📐</span>
+          <span class="rail-group-btn__badge">2</span>
+        </button>
+        <div class="rail-group-menu hidden" id="GroupMenuLayout" role="menu">
+          <button type="button" class="rail-menu-item" id="TopDockToggle" title="اوپر پینل">🔽</button>
+          <button type="button" class="rail-menu-item" id="BottomDockToggle" title="نیچے پینل">🔼</button>
+        </div>
+      </div>
+
+      <div class="rail-group" data-rail-group="map">
+        <button type="button" class="rail-group-btn" id="GroupBtnMap" title="نقشہ کنٹرول" aria-haspopup="true">
+          <span class="rail-group-btn__icon">🗺️</span>
+          <span class="rail-group-btn__badge">6</span>
+        </button>
+        <div class="rail-group-menu hidden" id="GroupMenuMap" role="menu">
+          <button type="button" class="rail-menu-item" id="BtnMapLock" title="نقشہ لاک">🔓</button>
+          <button type="button" class="rail-menu-item" id="BtnZoomIn" title="Zoom In">➕</button>
+          <button type="button" class="rail-menu-item" id="BtnZoomOut" title="Zoom Out">➖</button>
+          <button type="button" class="rail-menu-item" id="BtnMyLocation" title="میری جگہ">🎯</button>
+          <button type="button" class="rail-menu-item" id="BtnLiveShare" title="لوکیشن آن">📡</button>
+          <button type="button" class="rail-menu-item" id="MapFocusBtn" title="صاف نقشہ">🗺️</button>
+        </div>
+      </div>
+
+      <div class="rail-group" data-rail-group="premium">
+        <button type="button" class="rail-group-btn" id="GroupBtnPremium" title="Premium فیچرز" aria-haspopup="true">
+          <span class="rail-group-btn__icon">✨</span>
+          <span class="rail-group-btn__badge">6</span>
+        </button>
+        <div class="rail-group-menu hidden" id="GroupMenuPremium" role="menu">
+          <button type="button" class="rail-menu-item" id="BtnTraffic" title="Traffic">🚦</button>
+          <button type="button" class="rail-menu-item" id="BtnRouteAI" title="AI راستہ">🧭</button>
+          <button type="button" class="rail-menu-item" id="BtnVoiceNav" title="Voice Nav">🔊</button>
+          <button type="button" class="rail-menu-item" id="BtnOfflineMap" title="Offline">📥</button>
+          <button type="button" class="rail-menu-item" id="BtnFamily" title="خاندان">👨‍👩‍👧</button>
+          <button type="button" class="rail-menu-item" id="BtnDashcam" title="Dashcam">📹</button>
+        </div>
+      </div>
+
+      <div class="rail-group" data-rail-group="safety">
+        <button type="button" class="rail-group-btn" id="GroupBtnSafety" title="حفاظت و سفر" aria-haspopup="true">
+          <span class="rail-group-btn__icon">🛡️</span>
+          <span class="rail-group-btn__badge">7</span>
+        </button>
+        <div class="rail-group-menu hidden" id="GroupMenuSafety" role="menu">
+          <button type="button" class="rail-menu-item" id="BtnWomenOnly" title="خواتین">👩</button>
+          <button type="button" class="rail-menu-item" id="BtnSafeRide" title="محفوظ">🛡️</button>
+          <button type="button" class="rail-menu-item" id="BtnSOS" title="SOS">🆘</button>
+          <button type="button" class="rail-menu-item" id="BtnChat" title="چیٹ">💬</button>
+          <button type="button" class="rail-menu-item" id="BtnBid" title="بولی">💰</button>
+          <button type="button" class="rail-menu-item" id="BtnShareTrip" title="شیئر">📤</button>
+          <button type="button" class="rail-menu-item" id="BtnCarbon" title="CO₂">🌱</button>
+        </div>
+      </div>
+
+      <div class="rail-group" data-rail-group="lang">
+        <button type="button" class="rail-group-btn" id="BtnLangMenu" title="زبان" aria-haspopup="true">
+          <span class="rail-group-btn__icon">🌐</span>
+          <span class="rail-group-btn__badge" id="LangBadge">3</span>
+        </button>
+        <div class="rail-group-menu rail-group-menu--lang hidden" id="LangDropdown" role="menu" aria-label="زبان منتخب کریں"></div>
+      </div>
+
+      <div class="rail-group" data-rail-group="app">
+        <button type="button" class="rail-group-btn" id="GroupBtnApp" title="ایپ سیٹنگز" aria-haspopup="true">
+          <span class="rail-group-btn__icon">⚙️</span>
+          <span class="rail-group-btn__badge">4</span>
+        </button>
+        <div class="rail-group-menu rail-group-menu--app hidden" id="GroupMenuApp" role="menu">
+          <select id="RoleSelect" class="rail-role-select" title="رول">
+            <option value="passenger">🧳 مسافر</option>
+            <option value="driver">🚕 ڈرائیور</option>
+            <option value="owner">🏢 مالک</option>
+            <option value="superadmin">⚙️ Admin</option>
+          </select>
+          <button type="button" class="rail-menu-item" id="BtnTheme" title="تھیم">🌙</button>
+          <button type="button" class="rail-menu-item" id="BtnShare" title="شیئر">📤</button>
+          <button type="button" class="rail-menu-item" id="BtnMenuMobile" title="مینو">☰</button>
+          <button type="button" class="rail-menu-item hidden" id="BtnInstall" title="انسٹال">📲</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Workspace -->
+    <main id="WorkspaceContainer" class="central-workspace">
+      <div id="PullRefresh" class="pull-refresh">↓ تازہ کریں</div>
+
+      <div id="SwipeViewport" class="swipe-viewport">
+        <div id="SwipeTrack" class="swipe-track" data-page="map">
+
+          <!-- صفحہ ۱: نقشہ -->
+          <div class="swipe-panel swipe-panel--map">
+      <section id="MapContainer" class="map-layer map-maximized">
+        <div id="LiveMapRenderArea"></div>
+        <div id="PickHint" class="pick-hint hidden"></div>
+
+        <!-- AI — فرنٹ پیج (نقشہ) پر ہمیشہ -->
+        <div id="MapAiBar" class="map-ai-bar">
+          <div class="map-ai-bar__row">
+            <span class="map-ai-bar__icon" title="سفر AI">🤖</span>
+            <input type="text" id="MapAiInput" class="map-ai-bar__input"
+              placeholder="سفر، گاڑی، نقشہ — لکھیں یا 🎤 بولیں..." autocomplete="off">
+            <button type="button" id="MapAiVoice" class="map-ai-bar__btn" title="آواز">🎤</button>
+            <button type="button" id="MapAiSend" class="map-ai-bar__btn map-ai-bar__btn--send" title="بھیجیں">➤</button>
+          </div>
+          <div id="MapAiPanel" class="map-ai-panel">
+            <div id="MapAiMessages" class="map-ai-messages">
+              <div class="ai-msg ai-msg--ai">🤖 السلام! میں صرف <strong>نقشہ، سفر، گاڑی اور بکنگ</strong> میں مدد کرتا ہوں۔</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- اوپر dock — فکس -->
+        <div id="TopMapDock" class="map-ui-dock map-ui-dock--top">
+          <button type="button" id="TopDockTab" class="dock-tab dock-tab--top hidden" aria-hidden="true">🔍</button>
+          <div id="TopDockContent" class="map-ui-dock__content">
+        <button type="button" id="SearchFab" class="search-fab" aria-label="مقام اور منزل">🔍</button>
+        <button type="button" id="SearchSideTab" class="search-side-tab hidden" aria-label="راستہ کھولیں">📍 راستہ</button>
+        <button type="button" id="RouteChip" class="route-chip hidden" aria-label="راستہ تبدیل کریں">
+          <span id="RouteChipText"></span>
+        </button>
+        <div id="TripProgressPanel" class="trip-progress-panel hidden">
+          <div id="TripProgressRing"></div>
+          <div class="trip-progress-info">
+            <div id="TripEtaText"></div>
+            <div id="TripPhaseText"></div>
+            <div id="TripProgressBar"></div>
+          </div>
+        </div>
+          </div>
+        </div>
+
+        <!-- سرچ شیٹ -->
+        <div id="SearchSheet" class="search-sheet hidden" role="dialog" aria-label="مقام تلاش">
+          <div class="search-sheet__backdrop" id="SearchSheetBackdrop"></div>
+          <div class="search-sheet__panel glass-panel">
+            <div class="search-sheet__handle"></div>
+            <div class="search-sheet__head">
+              <h3>🔍 Smart Search</h3>
+              <button type="button" class="panel-toggle" id="SearchMinimize" title="چھوٹا کریں">➖</button>
+            </div>
+
+            <!-- Smart Search Engine -->
+            <div id="SmartSearchWrap" class="smart-search-wrap">
+              <input type="search" id="SmartSearchInput" class="smart-search-input"
+                placeholder="مسجد، اسکول، پٹرول، ہوٹل، مارکیٹ... کچھ بھی تلاش کریں" autocomplete="off">
+              <div id="SmartSearchResults" class="smart-search-results hidden"></div>
+            </div>
+            <div id="PoiCategories" class="poi-categories"></div>
+
+            <div class="loc-mode-tabs">
+              <button type="button" class="loc-mode-tab loc-mode-tab--active" id="BtnLocModeGPS">🎯 میری جگہ</button>
+              <button type="button" class="loc-mode-tab" id="BtnLocModeManual">🗺️ خود منتخب</button>
+            </div>
+
+            <div class="location-field">
+              <label class="search-input-group search-input-group--loc">
+                <button type="button" class="loc-btn" id="BtnUseGPS" title="GPS">🎯</button>
+                <input type="text" placeholder="کہاں سے" id="CurrentLocationInput" readonly>
+                <button type="button" class="loc-btn" id="BtnPickPickupMap" title="نقشے پر">📍</button>
+              </label>
+            </div>
+            <div class="location-field">
+              <label class="search-input-group search-input-group--loc">
+                <span class="icon">🏠</span>
+                <input type="text" placeholder="کہاں تک" id="DestinationInput" autocomplete="street-address">
+                <button type="button" class="loc-btn" id="BtnVoiceSearch" title="آواز">🎤</button>
+                <button type="button" class="loc-btn" id="BtnPickDestMap" title="نقشے پر">📍</button>
+              </label>
+            </div>
+            <button type="button" class="btn-search btn-gradient" id="BtnSearch">🔍 تلاش کریں</button>
+            <div id="MultiStops"></div>
+            <button type="button" class="btn-link" id="BtnAddStop">+ اضافی منزل</button>
+            <input type="datetime-local" id="ScheduledAt" class="schedule-input" title="شیڈول">
+            <label class="check-row"><input type="checkbox" id="RecurringRide"> مستقل سفر (ہفتہ وار)</label>
+            <label class="check-row"><input type="checkbox" id="RidePoolCheck"> 🤝 Ride Pool — کرایہ تقسیم</label>
+            <input type="number" id="PoolSeats" class="schedule-input" placeholder="سیٹیں (2)" min="2" max="4" value="2">
+            <div id="CargoFields" class="cargo-fields hidden">
+              <input type="text" id="CargoDescription" placeholder="سامان کی تفصیل">
+              <input type="number" id="CargoWeight" placeholder="وزن (kg)" min="0">
+              <button type="button" id="BtnCargoEstimate" class="btn-link">AI تخمینہ</button>
+              <div id="CargoResult" class="cargo-result hidden"></div>
+            </div>
+            <button type="button" class="btn-link" id="BtnFarePredict">🤖 AI کرایہ دیکھیں</button>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="DynamicContentContainer" class="content-layer hidden"></section>
+
+          </div><!-- /swipe-panel map -->
+
+          <!-- صفحہ ۲: اشتہارات + سرچ/فلٹر -->
+          <div class="swipe-panel swipe-panel--community">
+            <div class="community-page">
+              <div class="community-page__head">
+                <h2>📢 تمام اشتہارات</h2>
+                <button type="button" class="community-back" id="CommunityBack">← نقشہ</button>
+              </div>
+              <div class="ad-toolbar">
+                <input type="search" id="AdSearchInput" class="ad-search" placeholder="🔍 تلاش...">
+                <select id="AdFilterSelect" class="ad-filter">
+                  <option value="all">سب</option>
+                  <option value="ride">🚕 سفر</option>
+                  <option value="cargo">🚚 سامان</option>
+                </select>
+              </div>
+              <div id="CommunityList"></div>
+            </div>
+          </div>
+
+          <!-- صفحہ ۳: ڈرائیور / مالک -->
+          <div class="swipe-panel swipe-panel--driver">
+            <div class="driver-page">
+              <div class="community-page__head">
+                <h2>🚕 ڈرائیور پینل</h2>
+                <button type="button" class="community-back" id="DriverPageBack">← نقشہ</button>
+              </div>
+              <div id="DriverStatus" class="driver-status">
+                <p id="DriverStatusText">⚫ Offline</p>
+                <button type="button" id="DriverGoOnline" class="community-card__btn">🟢 Online — لوکیشن کھولیں</button>
+                <button type="button" id="DriverGoOffline" class="btn-link">Offline</button>
+              </div>
+              <div class="driver-ad-form">
+                <h3>📢 اشتہار دیں (گاڑی پر 📢 badge)</h3>
+                <input type="text" id="DriverAdFrom" placeholder="کہاں سے">
+                <input type="text" id="DriverAdTo" placeholder="کہاں تک">
+                <textarea id="DriverAdText" placeholder="اشتہار..." rows="2"></textarea>
+                <button type="button" id="DriverPostAd" class="community-card__btn">شائع کریں</button>
+              </div>
+              <div id="OwnerFleetList" class="owner-fleet"></div>
+            </div>
+          </div>
+
+          <!-- صفحہ ۴: Super Admin -->
+          <div class="swipe-panel swipe-panel--admin">
+            <div class="admin-page">
+              <div class="community-page__head">
+                <h2>⚙️ Super Admin</h2>
+                <button type="button" class="community-back" id="AdminPageBack">← نقشہ</button>
+              </div>
+              <div id="AdminDashboard"></div>
+            </div>
+          </div>
+
+        </div><!-- /SwipeTrack -->
+        <nav id="PageNav" class="page-nav">
+          <button type="button" class="page-nav__btn page-nav--active" data-goto-page="map">🗺️</button>
+          <button type="button" class="page-nav__btn" data-goto-page="ads">📢</button>
+          <button type="button" class="page-nav__btn" data-goto-page="driver">🚕</button>
+          <button type="button" class="page-nav__btn" data-goto-page="admin">⚙️</button>
+        </nav>
+        <span class="swipe-hint">← سوائپ</span>
+      </div><!-- /SwipeViewport -->
+    </main>
+
+    <!-- Sub Bar + Vehicles wrapper -->
+    <div id="BottomPanel" class="bottom-panel">
+    <button type="button" id="BottomSideTab" class="dock-tab dock-tab--bottom bottom-side-tab hidden" aria-hidden="true" aria-label="گاڑیاں">🚕</button>
+    <section id="VehicleZone" class="vehicle-zone vehicle-zone--overlay" aria-label="دستیاب گاڑیاں">
+      <div id="VehicleList" class="vehicle-list"></div>
+    </section>
+    <footer id="BottomSubBar" class="sub-bar" aria-label="ذیلی مینیو">
+      <div class="sub-bar__toggles">
+        <button type="button" class="panel-toggle" id="BottomMinimize" title="چھوٹا">➖</button>
+        <button type="button" class="panel-toggle" id="BottomHide" title="چھپائیں">✕</button>
+      </div>
+      <div id="HomeSubMenu" class="sub-action-group"></div>
+      <div id="RideSubMenu" class="sub-action-group hidden"></div>
+      <div id="CargoSubMenu" class="sub-action-group hidden"></div>
+      <div id="BookingsSubMenu" class="sub-action-group hidden"></div>
+      <div id="MapSubMenu" class="sub-action-group hidden"></div>
+    </footer>
+    </div><!-- /BottomPanel -->
+
+    <!-- Mobile Bottom Tabs -->
+    <nav class="mobile-tab-bar" aria-label="موبائل نیویگیشن">
+      <button type="button" class="mobile-tab active" data-module="home"><span>🏠</span><small>ہوم</small></button>
+      <button type="button" class="mobile-tab" data-module="ride"><span>🚕</span><small>سفر</small></button>
+      <button type="button" class="mobile-tab" data-module="cargo"><span>🚚</span><small>سامان</small></button>
+      <button type="button" class="mobile-tab" data-module="bookings"><span>📅</span><small>بکنگ</small></button>
+      <button type="button" class="mobile-tab" data-module="more"><span>☰</span><small>مزید</small></button>
+    </nav>
+  </div>
+
+  <!-- Mobile More Sheet -->
+  <div id="MobileMoreSheet" class="bottom-sheet hidden" role="dialog">
+    <div class="bottom-sheet__panel">
+      <div class="bottom-sheet__handle"></div>
+      <h3 class="bottom-sheet__title">مزید ماڈیولز</h3>
+      <div class="more-sheet-grid">
+        <button type="button" class="more-sheet-item" data-module="map">🗺️ نقشہ</button>
+        <button type="button" class="more-sheet-item" data-module="history">📊 ریکارڈ</button>
+        <button type="button" class="more-sheet-item" data-module="finance">💰 مالیات</button>
+        <button type="button" class="more-sheet-item" data-module="favorites">⭐ پسندیدہ</button>
+        <button type="button" class="more-sheet-item" data-module="fleet">🏢 فلیٹ</button>
+        <button type="button" class="more-sheet-item" data-module="notifications">🔔 اطلاعات</button>
+        <button type="button" class="more-sheet-item" data-module="safety">🛡️ حفاظت</button>
+        <button type="button" class="more-sheet-item" data-module="profile">👤 پروفائل</button>
+      </div>
+      <button type="button" class="bottom-sheet__close" id="MoreSheetClose">بند کریں</button>
+    </div>
+  </div>
+
+  <!-- Chat Panel -->
+  <div id="ChatPanel" class="chat-panel hidden">
+    <div class="chat-panel__head">
+      <strong>💬 In-App Chat</strong>
+      <button type="button" id="ChatClose">✕</button>
+    </div>
+    <div id="ChatMessages" class="chat-panel__msgs"></div>
+    <div class="chat-panel__input">
+      <input type="text" id="ChatInput" placeholder="پیغام...">
+      <button type="button" id="ChatSend">➤</button>
+    </div>
+  </div>
+
+  <!-- Payment Quick -->
+  <div id="PayBar" class="pay-bar">
+    <button type="button" id="BtnJazzCash">JazzCash</button>
+    <button type="button" id="BtnEasyPaisa">Easypaisa</button>
+  </div>
+
+  <!-- Pricing Alert -->
+  <div id="PricingAlertBar" class="pricing-alert hidden"></div>
+  <div id="DashcamIndicator" class="dashcam-indicator hidden">🔴 REC</div>
+
+  <!-- Route Options -->
+  <div id="RouteOptionsPanel" class="route-options-panel hidden">
+    <div class="route-options-panel__head">
+      <strong>🧭 AI راستہ</strong>
+      <button type="button" id="RouteOptionsClose">✕</button>
+    </div>
+    <div id="RouteOptionsList"></div>
+  </div>
+
+  <!-- Family Panel -->
+  <div id="FamilyPanel" class="family-panel hidden">
+    <div class="family-panel__head">
+      <strong>👨‍👩‍👧 خاندان — Live Tracking</strong>
+      <button type="button" id="FamilyClose">✕</button>
+    </div>
+    <div id="FamilyList"></div>
+    <input type="text" id="FamilyNameInput" placeholder="نام شامل کریں">
+    <button type="button" id="BtnAddFamily" class="community-card__btn">+ شامل</button>
+  </div>
+
+  <!-- Modals & Toasts -->
+  <div id="ModalContainer" class="modal-wrapper hidden">
+    <div class="modal-content glass-panel">
+      <button type="button" class="modal-close" id="ModalCloseBtn" aria-label="بند">&times;</button>
+      <div id="ModalBody"></div>
+    </div>
+  </div>
+  <div id="NotificationContainer" class="toast-wrapper"></div>
+  <div id="OverlayContainer" class="loading-overlay hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="node_modules/leaflet/dist/leaflet.js"></script>
+  <script src="js/env.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/map-engine.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/ws-client.js"></script>
+  <script src="js/features.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/trip-tracker.js"></script>
+  <script src="js/role-hub.js"></script>
+  <script src="js/admin-hub.js"></script>
+  <script src="js/interaction-ui.js"></script>
+  <script src="js/search-ai.js"></script>
+  <script src="js/premium-hub.js"></script>
+  <script src="js/rail-hub.js"></script>
+  <script src="js/pwa.js"></script>
+  <script type="module" src="js/firebase-init.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

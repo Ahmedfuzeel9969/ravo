@@ -1,0 +1,41 @@
+{
+  "name": "P2P Transport & Cargo",
+  "short_name": "P2P Transport",
+  "description": "سفر اور سامان — ہر پلیٹ فارم پر",
+  "lang": "ur",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "categories": ["travel", "navigation", "business"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "فوری سفر",
+      "url": "/?module=ride",
+      "description": "Ride booking"
+    },
+    {
+      "name": "سامان",
+      "url": "/?module=cargo",
+      "description": "Cargo delivery"
+    }
+  ]
+}

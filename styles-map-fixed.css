@@ -1,0 +1,126 @@
+/* Fixed chrome — header/bottom fixed, only map pans; dock collapse; map lock */
+
+.main-bar {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  flex-shrink: 0;
+}
+
+.central-workspace {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.bottom-panel {
+  flex-shrink: 0;
+  z-index: 850;
+  background: var(--color-bg-elevated, #fff);
+  position: relative;
+}
+
+#LiveMapRenderArea,
+#LiveMapRenderArea .leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.map-ui-dock--top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 800;
+  pointer-events: none;
+}
+
+.map-ui-dock--top .map-ui-dock__content > * { pointer-events: auto; }
+
+.dock-toggle {
+  position: absolute;
+  z-index: 802;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  cursor: pointer;
+  font-size: 0.75rem;
+  pointer-events: auto;
+}
+
+.dock-toggle--top { top: 8px; inset-inline-end: 8px; }
+.dock-toggle--bottom { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); z-index: 10; }
+
+.dock-tab {
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  pointer-events: auto;
+}
+
+.dock-tab--top {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 0;
+  writing-mode: vertical-rl;
+  padding: 10px 5px;
+  border-radius: 0 10px 10px 0;
+  background: linear-gradient(135deg, #2563eb, #16a34a);
+  color: white;
+  font-size: 0.7rem;
+  z-index: 801;
+}
+
+[dir="rtl"] .dock-tab--top {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+  border-radius: 10px 0 0 10px;
+}
+
+.dock-tab--bottom {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  font-size: 1.1rem;
+}
+
+.dock-tab.hidden { display: none; }
+
+.bottom-panel .vehicle-zone {
+  position: relative;
+  max-height: var(--vehicle-zone-h, 76px);
+  padding: 4px 8px;
+  background: var(--color-bg-elevated, #fff);
+  border-top: 1px solid var(--color-border, #e2e8f0);
+}
+
+.bottom-panel.bottom-panel--collapsed .vehicle-zone,
+.bottom-panel.bottom-panel--collapsed .sub-bar { display: none; }
+
+.btn-tool--locked { background: #dc2626 !important; color: white !important; }
+
+.right-map-controls {
+  position: absolute;
+  bottom: 12px;
+  inset-inline-end: 10px;
+  z-index: 810;
+}
+
+@media (max-width: 768px) {
+  .vehicle-zone--overlay {
+    position: relative !important;
+    background: var(--color-bg-elevated, #fff) !important;
+  }
+}
+
+.app-layout[data-swipe-page="ads"] #BottomPanel,
+.app-layout[data-swipe-page="driver"] #BottomPanel,
+.app-layout[data-swipe-page="admin"] #BottomPanel { display: none; }
+
+.app-layout[data-swipe-page="ads"] #TopMapDock,
+.app-layout[data-swipe-page="driver"] #TopMapDock,
+.app-layout[data-swipe-page="admin"] #TopMapDock { display: none; }

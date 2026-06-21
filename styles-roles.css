@@ -1,0 +1,162 @@
+/* Roles, Admin, Driver, Trip Progress, Map badges */
+
+.role-select {
+  font-size: 0.72rem;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border, #e2e8f0);
+  background: var(--color-surface, #fff);
+  max-width: 100px;
+}
+
+.swipe-track { width: 400%; }
+.swipe-panel { flex: 0 0 25%; width: 25%; }
+
+.swipe-track[data-page="ads"] { transform: translateX(-25%); }
+.swipe-track[data-page="driver"] { transform: translateX(-50%); }
+.swipe-track[data-page="admin"] { transform: translateX(-75%); }
+
+[dir="rtl"] .swipe-track[data-page="ads"] { transform: translateX(25%); }
+[dir="rtl"] .swipe-track[data-page="driver"] { transform: translateX(50%); }
+[dir="rtl"] .swipe-track[data-page="admin"] { transform: translateX(75%); }
+
+.page-nav {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 720;
+  background: rgba(255,255,255,0.9);
+  padding: 4px 8px;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.page-nav__btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.page-nav--active { background: #2563eb; color: white; }
+
+.driver-pin--real { position: relative; }
+
+.driver-ad-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 0.65rem;
+  background: #dc2626;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.driver-eta-badge {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  background: #0f172a;
+  color: white;
+  padding: 1px 4px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.ad-badge { font-size: 0.6rem; position: absolute; top: -2px; right: -2px; }
+.vehicle-card__avatar { position: relative; }
+
+.eta-pill {
+  display: inline-block;
+  font-size: 0.7rem;
+  background: #dcfce7;
+  color: #166534;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.trip-progress-panel {
+  position: absolute;
+  top: 56px;
+  inset-inline: 10px;
+  z-index: 820;
+  background: rgba(255,255,255,0.95);
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  pointer-events: auto;
+}
+
+.trip-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.trip-bar__done { background: #22c55e; }
+.trip-bar__remain { background: #ef4444; flex: 1; }
+.trip-bar__labels { display: flex; justify-content: space-between; font-size: 0.68rem; margin-top: 4px; }
+.trip-bar__green { color: #16a34a; }
+.trip-bar__red { color: #dc2626; }
+.trip-progress-info { flex: 1; font-size: 0.82rem; }
+
+.ad-toolbar { display: flex; gap: 8px; margin-bottom: 12px; }
+.ad-search { flex: 1; padding: 10px 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 0.9rem; }
+.ad-filter { padding: 8px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 0.85rem; }
+
+.driver-page, .admin-page {
+  padding: 12px 14px calc(80px + env(safe-area-inset-bottom));
+  max-width: 520px;
+  margin: 0 auto;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.driver-status {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.driver-status--online { border-color: #16a34a; background: #f0fdf4; }
+
+.driver-ad-form { background: white; border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+.driver-ad-form input, .driver-ad-form textarea {
+  width: 100%; margin-top: 8px; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;
+}
+
+.fleet-live-card { background: white; border-radius: 12px; padding: 12px; margin-bottom: 8px; border: 1px solid #e2e8f0; }
+.fleet-live-card--on { border-color: #16a34a; }
+.mini-map-placeholder { font-size: 0.75rem; color: #64748b; margin: 6px 0; }
+
+.admin-widgets { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.admin-widget { background: white; border-radius: 14px; padding: 12px; border: 1px solid #e2e8f0; cursor: pointer; }
+.admin-widget--expanded { grid-column: 1 / -1; }
+.admin-widget h3 { font-size: 0.85rem; margin: 0 0 8px; }
+.admin-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.admin-stat-tile { text-align: center; padding: 8px; background: #f8fafc; border-radius: 10px; }
+.admin-stat-tile__icon { font-size: 1.2rem; display: block; }
+.admin-stat-tile strong { display: block; font-size: 1rem; }
+.admin-stat-tile small { font-size: 0.65rem; color: #64748b; }
+
+.chart-donut { display: block; margin: 0 auto 8px; }
+.chart-donut__legend { font-size: 0.7rem; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.chart-donut__legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-inline-end: 4px; }
+.chart-bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 0.7rem; }
+.chart-bar-label { width: 28px; }
+.chart-bar-track { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.chart-bar-fill { height: 100%; border-radius: 4px; }
+.chart-bar-val { width: 24px; text-align: end; }
