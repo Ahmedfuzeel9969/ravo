@@ -73,9 +73,8 @@ function ensureFeatureSchema() {
   });
 }
 
-ensureFeatureSchema();
-
 module.exports = {
+  ensureFeatureSchema,
   predictFare(distanceKm = 5) {
     const hour = new Date().getHours();
     let base = 80 + distanceKm * 45;

@@ -2,8 +2,6 @@ const http = require('http');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const store = require('./db');
-require('./features-store');
 
 const {
   helmet, apiLimiter, writeLimiter, aiLimiter, resolveUser
@@ -20,6 +18,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, '..');
 const API_ONLY = process.env.API_ONLY === 'true';
+const USE_FIRESTORE = (process.env.STORAGE_BACKEND || 'json').toLowerCase() === 'firestore';
 
 const corsOrigin = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
@@ -38,7 +37,7 @@ app.use('/api', featuresRouter);
 app.use('/api/roles', rolesRouter);
 app.use('/api/search', aiLimiter, searchRouter);
 
-const { attachWebSocket } = require('./ws');
+let store = null;
 
 app.get('/api/history/stats', (req, res) => {
   try {
@@ -63,6 +62,7 @@ app.get('/api/health', (_req, res) => {
       success: true,
       status: 'ok',
       ws: '/ws',
+      storage: store.engine.getStorageMode(),
       db: dbStats,
       timestamp: new Date().toISOString()
     });
@@ -97,23 +97,46 @@ if (API_ONLY) {
   });
 }
 
-const server = http.createServer(app);
-attachWebSocket(server);
-
 function shutdown(signal) {
   console.log(`\n  ⏹ ${signal} — shutting down...`);
-  server.close(() => process.exit(0));
+  const flush = store?.engine?.flush?.();
+  const done = () => process.exit(0);
+  if (flush && typeof flush.then === 'function') {
+    flush.finally(done);
+  } else {
+    done();
+  }
   setTimeout(() => process.exit(1), 10000);
 }
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n  🚀 P2P Transport Server (production-hardened)`);
-  console.log(`  🏡 Local:   http://localhost:${PORT}`);
-  console.log(`  📡 API:     http://localhost:${PORT}/api/health`);
-  console.log(`  🔴 Live WS: ws://localhost:${PORT}/ws`);
-  if (API_ONLY) console.log(`  📦 Mode:    API_ONLY (static frontend not served)`);
-  console.log('');
+async function start() {
+  if (USE_FIRESTORE) {
+    const { initFirebase } = require('./storage/firebase-admin');
+    initFirebase();
+  }
+
+  store = require('./db');
+  await store.initDatabase();
+
+  const { attachWebSocket } = require('./ws');
+  const server = http.createServer(app);
+  attachWebSocket(server);
+
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n  🚀 P2P Transport Server (production-hardened)`);
+    console.log(`  🏡 Local:   http://localhost:${PORT}`);
+    console.log(`  📡 API:     http://localhost:${PORT}/api/health`);
+    console.log(`  🔴 Live WS: ws://localhost:${PORT}/ws`);
+    console.log(`  💾 Storage: ${store.engine.getStorageMode()}`);
+    if (API_ONLY) console.log(`  📦 Mode:    API_ONLY (static frontend not served)`);
+    console.log('');
+  });
+}
+
+start().catch((err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });

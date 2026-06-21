@@ -18,5 +18,10 @@ services:
         value: production
       - key: API_ONLY
         value: "true"
+      - key: STORAGE_BACKEND
+        value: firestore
+      - key: FIREBASE_PROJECT_ID
+        value: ravo-44c4c
       - key: CORS_ORIGIN
         value: https://ravo-44c4c.web.app,https://ravo-44c4c.firebaseapp.com,http://localhost:3000,http://127.0.0.1:3000
+    # Add FIREBASE_SERVICE_ACCOUNT_JSON as a secret in Render Dashboard (do not commit)

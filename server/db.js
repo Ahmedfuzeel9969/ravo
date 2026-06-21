@@ -29,21 +29,26 @@ const DEFAULT_DB = {
   ]
 };
 
-engine.init(DEFAULT_DB);
-engine.hydrate(DEFAULT_DB);
+async function initDatabase() {
+  await engine.initAsync(DEFAULT_DB);
+  await engine.hydrateAsync(DEFAULT_DB);
 
-engine.mutate((db) => {
-  db.bookings
-    .filter((b) => ['active', 'upcoming'].includes(b.status))
-    .forEach((b) => {
-      const d = db.drivers.find((x) => x.id === b.driver_id);
-      if (d) {
-        d.is_available = 0;
-        d.active_booking_id = b.id;
-      }
-    });
-  if (!db.idempotency_keys) db.idempotency_keys = [];
-});
+  engine.mutate((db) => {
+    db.bookings
+      .filter((b) => ['active', 'upcoming'].includes(b.status))
+      .forEach((b) => {
+        const d = db.drivers.find((x) => x.id === b.driver_id);
+        if (d) {
+          d.is_available = 0;
+          d.active_booking_id = b.id;
+        }
+      });
+    if (!db.idempotency_keys) db.idempotency_keys = [];
+  });
+
+  const { ensureFeatureSchema } = require('./features-store');
+  ensureFeatureSchema();
+}
 
 function haversineKm(lat1, lng1, lat2, lng2) {
   const R = 6371;
@@ -163,6 +168,7 @@ function lockDriver(db, driverId, bookingId) {
 }
 
 module.exports = {
+  initDatabase,
   haversineKm,
   formatDriver,
   engine,
