@@ -13,6 +13,7 @@ const PWAManager = {
     this.initOffline();
     this.initShare();
     this.initMobileNav();
+    this.initMobileViewport();
     this.initMoreSheet();
     this.initPullToRefresh();
     this.initUrlModule();
@@ -149,6 +150,18 @@ const PWAManager = {
         e.currentTarget.classList.add('hidden');
       }
     });
+  },
+
+  initMobileViewport() {
+    const setVh = () => {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    };
+    setVh();
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', () => setTimeout(setVh, 100));
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setVh);
+    }
   },
 
   initMoreSheet() {

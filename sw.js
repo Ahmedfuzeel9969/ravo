@@ -1,4 +1,4 @@
-const CACHE = 'p2p-v14';
+const CACHE = 'p2p-v15';
 const TILE_CACHE = 'p2p-tiles-v1';
 const ASSETS = [
   '/',
@@ -14,6 +14,7 @@ const ASSETS = [
   '/styles-search-ai.css',
   '/styles-map-chrome.css',
   '/styles-map-rail.css',
+  '/styles-mobile.css',
   '/js/search-ai.js',
   '/js/interaction-ui.js',
   '/js/premium-hub.js',

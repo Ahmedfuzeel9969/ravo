@@ -1,0 +1,479 @@
+/* ==========================================================================
+   Mobile-first polish — touch, safe areas, map-first layout
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --main-bar-h: 48px;
+    --vehicle-zone-h: 64px;
+    --sub-bar-h: 44px;
+    --mobile-tab-h: 58px;
+    --rail-clearance: 54px;
+    --touch-min: 44px;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── Touch-friendly controls ── */
+  button,
+  .mobile-tab,
+  .rail-group-btn,
+  .rail-menu-item,
+  .search-fab,
+  .page-nav__btn,
+  .panel-toggle,
+  .action-btn,
+  .loc-btn,
+  .poi-cat-btn,
+  .community-back,
+  .community-card__btn,
+  .install-banner__btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  button,
+  .panel-toggle,
+  .loc-btn {
+    min-height: var(--touch-min);
+    min-width: var(--touch-min);
+  }
+
+  input,
+  select,
+  textarea,
+  .smart-search-input,
+  .rail-role-select {
+    font-size: 16px !important; /* iOS zoom روکنے */
+  }
+
+  /* ── Header — compact ── */
+  .app-header {
+    padding-inline: max(12px, var(--safe-left)) max(12px, var(--safe-right));
+  }
+
+  .brand__icon {
+    font-size: 1.35rem;
+  }
+
+  /* ── Map workspace — زیادہ جگہ ── */
+  .central-workspace {
+    min-height: 0;
+  }
+
+  .swipe-viewport {
+    min-height: 0;
+  }
+
+  .leaflet-container {
+    touch-action: pan-x pan-y;
+  }
+
+  .leaflet-control-attribution {
+    font-size: 0.55rem !important;
+    max-width: 55vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Search FAB ── */
+  .search-fab {
+    top: max(10px, var(--safe-top));
+    left: max(10px, var(--safe-left));
+    width: 52px;
+    height: 52px;
+    font-size: 1.25rem;
+  }
+
+  .route-chip {
+    top: max(12px, var(--safe-top));
+    left: calc(max(10px, var(--safe-left)) + 58px);
+    right: calc(var(--rail-clearance) + max(8px, var(--safe-right)));
+    min-height: var(--touch-min);
+    display: flex;
+    align-items: center;
+    font-size: 0.76rem;
+  }
+
+  /* ── Side rail — safe area + touch ── */
+  #AppSideRail.app-side-rail {
+    top: calc(var(--main-bar-h) + var(--safe-top) + 4px);
+    right: max(6px, var(--safe-right));
+    gap: 5px;
+    max-height: calc(
+      100dvh - var(--main-bar-h) - var(--mobile-tab-h) -
+      var(--vehicle-zone-h) - var(--sub-bar-h) -
+      var(--safe-top) - var(--safe-bottom) - 24px
+    );
+    overflow-y: auto;
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #AppSideRail.app-side-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rail-group-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+  }
+
+  .rail-group-btn__icon {
+    font-size: 1.2rem;
+  }
+
+  .rail-menu-item {
+    width: 48px;
+    height: 48px;
+    font-size: 1.1rem;
+  }
+
+  .rail-menu-item--lang {
+    width: 100%;
+    min-height: var(--touch-min);
+    padding: 10px 14px;
+  }
+
+  .rail-group-menu--app .rail-menu-item {
+    min-height: var(--touch-min);
+  }
+
+  .rail-role-select {
+    min-height: var(--touch-min);
+    padding: 10px 12px;
+  }
+
+  /* ── AI bar — rail clearance ── */
+  .map-ai-bar {
+    left: max(8px, var(--safe-left));
+    right: calc(var(--rail-clearance) + max(6px, var(--safe-right)));
+    bottom: 10px;
+  }
+
+  .map-ai-bar__row {
+    padding: 8px 10px;
+    border-radius: 18px;
+  }
+
+  .map-ai-bar__input {
+    font-size: 16px;
+    padding: 8px 4px;
+  }
+
+  .map-ai-bar__btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  /* ── Search sheet → bottom sheet ── */
+  .search-sheet {
+    align-items: flex-end;
+    justify-content: center;
+    padding-top: 0;
+  }
+
+  .search-sheet__panel {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    max-height: min(92dvh, 92vh);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px calc(20px + var(--safe-bottom));
+    animation: mobileSheetUp 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  @keyframes mobileSheetUp {
+    from { transform: translateY(100%); opacity: 0.6; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .search-sheet__head h3 {
+    font-size: 1rem;
+  }
+
+  .btn-search,
+  .btn-gradient {
+    min-height: 48px;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .loc-mode-tab {
+    min-height: var(--touch-min);
+    padding: 8px 12px;
+  }
+
+  .poi-cat-btn {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  /* ── Bottom panel — compact ── */
+  .bottom-panel {
+    padding-bottom: 0;
+  }
+
+  .vehicle-zone--overlay {
+    max-height: var(--vehicle-zone-h) !important;
+    padding: 2px 6px 4px;
+  }
+
+  .vehicle-list {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+
+  .vehicle-card--compact {
+    scroll-snap-align: start;
+    flex: 0 0 148px !important;
+  }
+
+  .sub-bar {
+    min-height: var(--sub-bar-h);
+    padding: 4px max(8px, var(--safe-left)) 4px max(8px, var(--safe-right));
+    gap: 6px;
+    align-items: center;
+  }
+
+  .sub-bar__toggles {
+    flex-shrink: 0;
+  }
+
+  .panel-toggle {
+    width: var(--touch-min);
+    height: var(--touch-min);
+    font-size: 0.9rem;
+    border-radius: 10px;
+    background: var(--color-bg-subtle, #f1f5f9);
+  }
+
+  .sub-action-group {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .sub-action-group::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sub-action-group .action-btn {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    min-height: var(--touch-min);
+    padding: 8px 14px;
+    white-space: nowrap;
+  }
+
+  /* ── Mobile tab bar ── */
+  .mobile-tab-bar {
+    padding-inline: max(4px, var(--safe-left)) max(4px, var(--safe-right));
+    box-shadow: 0 -2px 20px rgba(15, 23, 42, 0.08);
+  }
+
+  .mobile-tab {
+    min-height: var(--touch-min);
+    padding-top: 6px;
+    padding-bottom: 4px;
+  }
+
+  .mobile-tab span {
+    font-size: 1.35rem;
+  }
+
+  .mobile-tab small {
+    font-size: 0.68rem;
+  }
+
+  /* ── Page nav / swipe hint — mobile tab سے redundant ── */
+  .page-nav,
+  .swipe-hint {
+    display: none !important;
+  }
+
+  /* ── Floating panels ── */
+  .chat-panel {
+    inset-inline: max(8px, var(--safe-left)) max(8px, var(--safe-right));
+    bottom: calc(
+      var(--mobile-tab-h) + var(--sub-bar-h) + var(--vehicle-zone-h) +
+      var(--safe-bottom) + 8px
+    );
+    max-height: min(45dvh, 280px);
+  }
+
+  .pay-bar {
+    bottom: calc(var(--mobile-tab-h) + var(--sub-bar-h) + var(--safe-bottom) + 6px);
+    inset-inline: max(10px, var(--safe-left)) max(10px, var(--safe-right));
+  }
+
+  .pay-bar button {
+    min-height: var(--touch-min);
+    padding: 10px 18px;
+    font-size: 0.82rem;
+  }
+
+  .route-options-panel,
+  .family-panel {
+    inset-inline: max(8px, var(--safe-left)) max(8px, var(--safe-right));
+    bottom: calc(var(--mobile-tab-h) + var(--safe-bottom) + 8px);
+    max-height: 55dvh;
+  }
+
+  .pricing-alert {
+    inset-inline: max(10px, var(--safe-left)) max(calc(var(--rail-clearance) + 8px), var(--safe-right));
+    top: calc(var(--main-bar-h) + var(--safe-top) + 6px);
+    font-size: 0.78rem;
+  }
+
+  .install-banner {
+    inset-inline: max(10px, var(--safe-left)) max(10px, var(--safe-right));
+    top: calc(var(--main-bar-h) + var(--safe-top) + 4px);
+    font-size: 0.78rem;
+  }
+
+  /* ── Community / driver pages ── */
+  .community-page {
+    padding: 14px max(14px, var(--safe-left)) calc(var(--mobile-tab-h) + var(--safe-bottom) + 16px) max(14px, var(--safe-right));
+  }
+
+  .community-back {
+    min-height: var(--touch-min);
+    padding: 8px 16px;
+  }
+
+  .ad-toolbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ad-search,
+  .ad-filter {
+    width: 100%;
+    min-height: var(--touch-min);
+    font-size: 16px;
+  }
+
+  .driver-ad-form input,
+  .driver-ad-form textarea {
+    font-size: 16px;
+    min-height: var(--touch-min);
+  }
+
+  /* ── Modals & toasts ── */
+  .modal-wrapper {
+    padding: max(12px, var(--safe-top)) max(12px, var(--safe-left)) max(12px, var(--safe-bottom)) max(12px, var(--safe-right));
+  }
+
+  .modal-content {
+    max-height: min(88dvh, 88vh);
+    overflow-y: auto;
+  }
+
+  .toast-wrapper {
+    inset-inline: max(10px, var(--safe-left)) max(10px, var(--safe-right));
+    bottom: calc(var(--mobile-tab-h) + var(--safe-bottom) + 12px);
+  }
+
+  .bottom-sheet__panel {
+    padding-bottom: calc(var(--space-lg) + var(--safe-bottom));
+  }
+
+  .more-sheet-item {
+    min-height: var(--touch-min);
+    padding: 12px 16px;
+    font-size: 1rem;
+  }
+}
+
+/* ── Small phones (iPhone SE, etc.) ── */
+@media (max-width: 380px) {
+  :root {
+    --vehicle-zone-h: 58px;
+    --sub-bar-h: 40px;
+    --rail-clearance: 50px;
+  }
+
+  .rail-group-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .vehicle-card--compact {
+    flex: 0 0 138px !important;
+  }
+
+  .map-ai-bar__icon {
+    display: none;
+  }
+
+  .brand__name {
+    display: none;
+  }
+}
+
+/* ── Landscape mobile — زیادہ map ── */
+@media (max-width: 896px) and (orientation: landscape) {
+  :root {
+    --vehicle-zone-h: 52px;
+    --sub-bar-h: 36px;
+    --main-bar-h: 40px;
+  }
+
+  #AppSideRail.app-side-rail {
+    max-height: calc(100dvh - var(--main-bar-h) - var(--safe-top) - var(--safe-bottom) - 16px);
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+    max-width: calc(100vw - 16px);
+    top: calc(var(--main-bar-h) + var(--safe-top) + 2px);
+  }
+
+  .mobile-tab-bar {
+    height: calc(48px + var(--safe-bottom));
+  }
+
+  .mobile-tab small {
+    display: none;
+  }
+
+  .map-ai-bar {
+    bottom: 6px;
+  }
+}
+
+/* PWA standalone — extra safe area */
+@media (display-mode: standalone) and (max-width: 768px) {
+  .main-bar {
+    padding-top: max(var(--safe-top), 8px);
+  }
+
+  #AppSideRail.app-side-rail {
+    top: calc(var(--main-bar-h) + max(var(--safe-top), 8px) + 2px);
+  }
+}
